@@ -27,7 +27,7 @@ class Amz:
 		soup = BeautifulSoup(html, "lxml")
 		name=soup.find('span',attrs={'id':"productTitle"}).text
 		price=float(soup.find('span', attrs={'id':"priceblock_ourprice"}).text[2:].replace(',',""))
-		rating=0
+		rating=soup.find('span', attrs={'data-hook':'rating-out-of-text'}).text
 		check_price(_new,urla,sender_email,receiver_email,password,name,price,rating)
 
 def check_price(_new,urla,sender_email,receiver_email,password,name,price,rating):
@@ -35,10 +35,10 @@ def check_price(_new,urla,sender_email,receiver_email,password,name,price,rating
 		_new.name=name
 		_new.price=price
 		_new.rate=rating
-		print("Name of product:-{fname} \nPrice of product:-Rs {fprice} \n Rating of product:-{frate}".format(fname=_new.name,fprice=_new.price,frate=_new.rate))
+		print("\n\nName of product:-{fname} \nPrice of product:-Rs {fprice} \nRating of product:-{frate}\n\n".format(fname=_new.name,fprice=_new.price,frate=_new.rate))
 	elif _new.price>price:
 		_new.price=price
-		print("Name of product:-{fname} \nNew price of product:-Rs {fprice} \n Rating of product:-{frate}".format(fname=_new.name,fprice=_new.price,frate=_new.rate))
+		print("\n\nName of product:-{fname} \nNew price of product:-Rs {fprice} \nRating of product:-{frate}\n\n".format(fname=_new.name,fprice=_new.price,frate=_new.rate))
 		with smtplib.SMTP(smtp_server, port) as server:
 			server.ehlo()
 			server.starttls(context=ctx)
@@ -47,4 +47,4 @@ def check_price(_new,urla,sender_email,receiver_email,password,name,price,rating
 			message=("Name is {fname} and the lower price is {cheap}".format(fname=_new.name,cheap=_new.price)).encode('utf-8')
 			server.sendmail(sender_email,receiver_email,message)
 	elif _new.price==price:
-		print("Price didn't reduce, you will receive an email if price is reduced")
+		print("\n\nPrice didn't reduce, you will receive an email if price is reduced\n\n")
